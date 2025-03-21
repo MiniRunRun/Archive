@@ -1,0 +1,393 @@
+/* styles.css */
+/* Add this */
+
+.category-btn.active {
+    color: red !important;
+    font-weight: bold;
+}
+
+.buttons a {
+    color: black;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#changeColorButton{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  #changeColorButton2{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  #changeColorButton3{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  #changeColorButton4{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  #changeColorButton5{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  #changeColorButton6{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  #changeColorButton7{
+    color:black;
+    text-decoration: none;
+    display: block;
+  }
+  #changeColorButton8{
+    color:black;
+  text-decoration: none;
+  display: block;
+  }
+  
+  .buttons{
+    position: fixed;
+    left:19px;
+    top:19px;
+    background-color: auto;
+    z-index: 10;
+  }
+  
+/* Main container settings */
+#container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Page transition animations */
+.page {
+    transition: all 0.5s ease-in-out;
+    height: 100%;
+}
+
+/* Common styles for all divs */
+div {
+    position: absolute;
+    background: white;
+    border: 2px rgb(255, 255, 255) solid;
+    box-sizing: border-box; /* Ensures padding/border are included in width/height */
+}
+/* General reset and container styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing:border-box;
+}
+
+.container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Styles for rectangles */
+.rectangle-1 {
+
+    width: 90%; /* Responsive width */
+    height: 90%; /* Responsive height */
+    left: 5%; /* Centered horizontally */
+    top: 5%; /* Centered vertically */
+    border: 2px black solid;
+   
+
+}
+
+
+
+.rectangle-2 {
+    width: 70%; /* Smaller than rectangle-1 */
+    height: 70%; /* Smaller than rectangle-1 */
+    left: 15%; /* Centered horizontally */
+    top: 15%; /* Centered vertically */
+    border: 2px black solid;
+}
+
+.rectangle-3 {
+    width: 50%; /* Smaller than rectangle-2 */
+    height: 50%; /* Smaller than rectangle-2 */
+    left: 25%; /* Centered horizontally */
+    top: 25%; /* Centered vertically */
+    border: 2px black solid;
+}
+
+.rectangle-4 {
+    width: 30%; /* Smaller than rectangle-3 */
+    height: 30%; /* Smaller than rectangle-3 */
+    left: 35%; /* Centered horizontally */
+    top: 35%; /* Centered vertically */
+    border: 2px black solid;
+}
+
+/* Styles for lines */
+.horizontal-line {
+    width: 100%; /* Full width */
+    height: 1px; /* Fixed height */
+    left: 0;
+    border: 1px solid rgb(0, 0, 0);
+    top: 50%; /* Centered vertically */
+    background: black; /* Use background instead of outline */
+}
+
+.vertical-line {
+    width: 1px; /* Fixed width */
+    height: 100%; /* Full height */
+    left: 50%; /* Centered horizontally */
+    top: 0;
+    border: 1px solid rgb(0, 0, 0);
+    background: black; /* Use background instead of outline */
+}
+
+/* Styles for text inside boxes */
+.text {
+    padding: 10px;
+    border: 2px solid rgb(255, 255, 255);
+    margin: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-size: 14px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+}
+
+.personal-text, .functional-text, .visual-inspo-text, .writing-inspo-text {
+
+    width: 90.93px;
+    height: 15.93px;
+}
+
+.personal-text {
+    left: 47.5%;
+    top: 40px;
+}
+
+.functional-text {
+    left: 47.5%;
+    top: 925px;
+}
+
+.visual-inspo-text {
+    width: 150.85px;
+    left: 1%;;
+    top: 49%;
+}
+
+.writing-inspo-text {
+    width: 150.85px;
+   left: 90%;;
+    top: 49%;
+}
+
+/* Styles for numbered boxes */
+.number-box {
+    width: 17.50px;
+    height: 17.50px;
+}
+
+.number-text {
+    padding: 10px;
+    border: 1px solid black;
+    margin: 0;
+    width: 14.64px;
+    height: 8.71px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-size: 14px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    word-wrap: break-word;
+}
+
+/* Specific styles for numbered boxes and text
+.number-text-1 { left: 665.42px; top: 425.54px; }
+
+.number-text-2 { left: 466.42px; top: 287.54px; }
+
+.number-text-3 { left: 258.42px; top: 145.54px; }
+
+.number-text-4 { left: 1453.42px; top: 145.54px; }
+
+.number-text-5 { left: 258.42px; top: 961.54px; }
+
+.number-text-6 { left: 1453.42px; top: 961.54px; }
+
+.number-text-7 { left: 50.42px; top: 49.54px; }
+
+.number-text-8 { left: 1665.42px; top: 49.54px; }
+
+.number-text-9 { left: 50.42px; top: 1055.54px; }
+
+.number-text-10 { left: 1665.42px; top: 1055.54px; }
+
+.number-text-11 { left: 1246.42px; top: 287.54px; }
+
+.number-text-12 { left: 466.42px; top: 819.54px; }
+
+.number-text-13 { left: 1246.42px; top: 819.54px; }
+
+.number-text-14 { left: 665.42px; top: 682.54px; }
+
+.number-text-15 { left: 1047.42px; top: 682.54px; }
+
+.number-text-16 { left: 1047.42px; top: 425.54px; } */
+
+
+
+/* Center display (pop-up when item is clicked) */
+.center-display {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+/* Center display content */
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    z-index: 1010;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: auto;
+}
+
+/* Image container for center display */
+.image-wrapper {
+    height: 65vmin;
+    aspect-ratio: 2 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Text background styling */
+.text-background {
+    padding: 1.25%;
+    background-color: white;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    bottom:10px
+}
+
+/* Text details */
+#center-name, #center-title, #center-year, #center-body {
+    font-family: Helvetica, Arial, sans-serif;
+    text-align: center;
+}
+
+#center-name {
+    font-size: 2.5vmin;
+    font-weight: bold;
+}
+
+#center-title {
+    font-size: 2.5vmin;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#center-year {
+    font-size: 2.5vmin;
+    font-weight: bold;
+}
+
+#center-body {
+    font-size: 2.2vmin;
+    max-width: 80%;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* Interactive image container */
+.interactive-container {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+ 
+}
+
+/* Individual image containers */
+.image-container {
+    position: absolute;
+    width: 7.5vmin;
+    height: 7.5vmin;
+    pointer-events: all;
+    z-index: 10;
+}
+
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+    z-index: 1000;
+}
+.image-container :hover{
+    width: 20vmin;
+    height: 20vmin;
+    border: 10px rgb(187, 255, 0);
+    transition: 0.25s ease-in; 
+    z-index: 1000;
+}
+
+/* Ensure full height */
+.full-viewport-height {
+    height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    .full-viewport-height {
+      height: 100dvh;
+    }
+}
