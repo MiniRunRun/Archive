@@ -1,393 +1,327 @@
-/* styles.css */
-/* Add this */
+       /* =========================================
+           1. Global Resets & Fonts
+           ========================================= */
+           * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.category-btn.active {
-    color: red !important;
-    font-weight: bold;
-}
+        body {
+            font-family: 'Roboto Mono', monospace;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: scroll; 
+            background: white;
+            min-height: 100vh; 
+            
+            --mouse-x: 0;
+            --mouse-y: 0;
+        }
 
-.buttons a {
-    color: black;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-#changeColorButton{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  #changeColorButton2{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  #changeColorButton3{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  #changeColorButton4{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  #changeColorButton5{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  #changeColorButton6{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  #changeColorButton7{
-    color:black;
-    text-decoration: none;
-    display: block;
-  }
-  #changeColorButton8{
-    color:black;
-  text-decoration: none;
-  display: block;
-  }
-  
-  .buttons{
-    position: fixed;
-    left:19px;
-    top:19px;
-    background-color: auto;
-    z-index: 10;
-  }
-  
-/* Main container settings */
-#container {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-}
+        /* =========================================
+           2. Main Container
+           ========================================= */
+        .container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: white; 
+            perspective: 800px; 
+            z-index: 1;
+        }
 
-/* Page transition animations */
-.page {
-    transition: all 0.5s ease-in-out;
-    height: 100%;
-}
+        /* =========================================
+           3. UI Buttons (Categories) - [Modified]
+           ========================================= */
+        .buttons {
+            position: fixed;
+            left: 19px;
+            top: 19px;
+            z-index: 100;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-width: 90vw;
+        }
 
-/* Common styles for all divs */
-div {
-    position: absolute;
-    background: white;
-    border: 2px rgb(255, 255, 255) solid;
-    box-sizing: border-box; /* Ensures padding/border are included in width/height */
-}
-/* General reset and container styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing:border-box;
-}
+        .category-btn {
+            background: white;
+            border: 1px solid transparent;
+            text-align: left;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            color: black;
+            padding: 3px 8px;
+            transition: all 0.2s ease;
+            opacity: 1;
+            display: flex;
+            align-items: center;
+        }
 
-.container {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-}
+        /* [新增] 按钮前的空心圆圈 */
+        .category-btn::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1px solid black; /* 黑色边框 */
+            border-radius: 50%; /* 圆形 */
+            background: transparent; /* 空心 */
+            margin-right: 8px;
+            transition: background 0.2s;
+        }
 
-/* Styles for rectangles */
-.rectangle-1 {
+        .category-btn:hover {
+            background: #f5f5f5;
+        }
 
-    width: 90%; /* Responsive width */
-    height: 90%; /* Responsive height */
-    left: 5%; /* Centered horizontally */
-    top: 5%; /* Centered vertically */
-    border: 2px black solid;
-   
+        .category-btn.active {
+            font-weight: bold;
+            color: #ff4500; 
+            /* 激活状态依然保持空心圆圈，或者你可以选择填实它 */
+        }
+        
+        /* 激活时圆圈变成红色空心（可选） */
+        .category-btn.active::before {
+            border-color: #ff4500;
+            border-width: 2px;
+        }
 
-}
+        /* =========================================
+           4. Background Geometry
+           ========================================= */
+        .rectangle-1, .rectangle-2, .rectangle-3, .rectangle-4,
+        .horizontal-line, .vertical-line, .perspective-lines {
+            position: absolute;
+            border: 1px solid black; 
+            background: transparent;
+            pointer-events: none; 
+            z-index: 0; 
+        }
 
+        .rectangle-1 { width: 90%; height: 90%; left: 5%; top: 5%; }
+        .rectangle-2 { width: 70%; height: 70%; left: 15%; top: 15%; }
+        .rectangle-3 { width: 50%; height: 50%; left: 25%; top: 25%; }
+        .rectangle-4 { width: 30%; height: 30%; left: 35%; top: 35%; }
 
+        .horizontal-line {
+            width: 100%; height: 1px; background: black; border: none; left: 0; top: 50%;
+        }
 
-.rectangle-2 {
-    width: 70%; /* Smaller than rectangle-1 */
-    height: 70%; /* Smaller than rectangle-1 */
-    left: 15%; /* Centered horizontally */
-    top: 15%; /* Centered vertically */
-    border: 2px black solid;
-}
+        .vertical-line {
+            width: 1px; height: 100%; background: black; border: none; left: 50%; top: 0;
+        }
 
-.rectangle-3 {
-    width: 50%; /* Smaller than rectangle-2 */
-    height: 50%; /* Smaller than rectangle-2 */
-    left: 25%; /* Centered horizontally */
-    top: 25%; /* Centered vertically */
-    border: 2px black solid;
-}
+        .perspective-lines { top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-.rectangle-4 {
-    width: 30%; /* Smaller than rectangle-3 */
-    height: 30%; /* Smaller than rectangle-3 */
-    left: 35%; /* Centered horizontally */
-    top: 35%; /* Centered vertically */
-    border: 2px black solid;
-}
+        /* =========================================
+           5. Text Labels
+           ========================================= */
+        .text {
+            position: absolute;
+            padding: 5px 10px;
+            border: 1px solid white; 
+            background: white;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-size: 14px;
+            font-weight: 700;
+            z-index: 1; 
+        }
 
-/* Styles for lines */
-.horizontal-line {
-    width: 100%; /* Full width */
-    height: 1px; /* Fixed height */
-    left: 0;
-    border: 1px solid rgb(0, 0, 0);
-    top: 50%; /* Centered vertically */
-    background: black; /* Use background instead of outline */
-}
+        .page-title {
+            position: absolute;
+            top: 20px; right: 20px;
+            left: auto;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.2;
+            z-index: 1;
+            color: black;
+            background: white;
+            padding: 10px 15px;
+            border: 1px solid white;
+            text-align: right;
+        }
 
-.vertical-line {
-    width: 1px; /* Fixed width */
-    height: 100%; /* Full height */
-    left: 50%; /* Centered horizontally */
-    top: 0;
-    border: 1px solid rgb(0, 0, 0);
-    background: black; /* Use background instead of outline */
-}
+        .personal-text { left: 50%; top: 7.5%; transform: translateX(-50%) rotate(-90deg); }
+        .functional-text { left: 50%; bottom: 8%; transform: translateX(-50%) rotate(-90deg); }
+        .visual-inspo-text { left: 5%; top: 50%; transform: translateY(-50%); }
+        .writing-inspo-text { right: 5%; top: 50%; transform: translateY(-50%); }
 
-/* Styles for text inside boxes */
-.text {
-    padding: 10px;
-    border: 2px solid rgb(255, 255, 255);
-    margin: 0;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: black;
-    font-size: 14px;
-    font-family: 'Roboto Mono', monospace;
-    font-weight: 700;
-}
+        /* =========================================
+           6. Interactive 3D Layers
+           ========================================= */
+        
+        .layer-3d {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
 
-.personal-text, .functional-text, .visual-inspo-text, .writing-inspo-text {
+        .tunnel-grid-container {
+            z-index: 5; 
+            pointer-events: none; 
+        }
 
-    width: 90.93px;
-    height: 15.93px;
-}
+        .interactive-container {
+            z-index: 10; 
+        }
 
-.personal-text {
-    left: 47.5%;
-    top: 40px;
-}
+        /* --- Tunnel Grid --- */
+        .tunnel-frame {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 90vw; 
+            height: 90vh;
+            transform-origin: center center;
+            transform-style: preserve-3d;
+            border: 1px solid black;
+            z-index: 0; 
+        }
 
-.functional-text {
-    left: 47.5%;
-    top: 925px;
-}
+        /* --- Image Container --- */
+        .image-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20vw; 
+            max-width: 300px;
+            height: auto; 
+            
+            transform-origin: center center;
+            transform-style: preserve-3d; 
+            
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            --hover-z: 0px; 
+            transition: transform 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+        }
 
-.visual-inspo-text {
-    width: 150.85px;
-    left: 1%;;
-    top: 49%;
-}
+        /* Hover Effect: Bring to front logic */
+        .image-container:hover {
+            z-index: 9999 !important;
+            --hover-z: 0px; 
+        }
 
-.writing-inspo-text {
-    width: 150.85px;
-   left: 90%;;
-    top: 49%;
-}
+        /* [关键修改] Highlight State (选中时) - 移除所有额外样式 */
+        /* 我们只用这个类来标记“它是被选中的”，样式上不做改变，保持原样 */
+        .image-container.highlighted {
+            z-index: 100; /* 保持层级优势，避免被隐藏元素干扰 */
+            opacity: 1 !important; 
+        }
+        
+        /* 移除之前的 drop-shadow, border-color, text-shadow 等高亮样式 */
+        /* 这样选中的物体看起来就是普通的物体 */
 
-/* Styles for numbered boxes */
-.number-box {
-    width: 17.50px;
-    height: 17.50px;
-}
+        /* [关键修改] Hidden State (未选中时) - 完全消失 */
+        .image-container.category-hidden {
+            opacity: 0 !important; 
+            pointer-events: none; /* 确保不可点击 */
+        }
 
-.number-text {
-    padding: 10px;
-    border: 1px solid black;
-    margin: 0;
-    width: 14.64px;
-    height: 8.71px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: black;
-    font-size: 14px;
-    font-family: 'Roboto Mono', monospace;
-    font-weight: 700;
-    word-wrap: break-word;
-}
+        /* --- 3D Cube --- */
+        .color-cube {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: opacity 0.4s ease, filter 0.5s ease;
+            transform: 
+                rotateY(calc( (var(--rel-x) * -75deg) + (var(--mouse-x) * 40deg) ))
+                rotateX(calc( (var(--rel-y) * 75deg) + (var(--mouse-y) * -40deg) ));
+        }
 
-/* Specific styles for numbered boxes and text
-.number-text-1 { left: 665.42px; top: 425.54px; }
+        .cube-face {
+            position: absolute; background-color: var(--cube-color); border: 1px solid rgba(0,0,0,0.05);
+            transition: opacity 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.number-text-2 { left: 466.42px; top: 287.54px; }
+        :root { --cube-depth: 40px; --cube-half-depth: 20px; }
 
-.number-text-3 { left: 258.42px; top: 145.54px; }
+        .face-front { width: 100%; height: 100%; transform: translateZ(var(--cube-half-depth)); opacity: 1; }
+        .face-back { width: 100%; height: 100%; transform: rotateY(180deg) translateZ(var(--cube-half-depth)); }
+        .face-right { width: var(--cube-depth); height: 100%; right: calc(var(--cube-half-depth) * -1); top: 0; transform: rotateY(90deg); filter: brightness(0.85); }
+        .face-left { width: var(--cube-depth); height: 100%; left: calc(var(--cube-half-depth) * -1); top: 0; transform: rotateY(-90deg); filter: brightness(0.85); }
+        .face-top { width: 100%; height: var(--cube-depth); top: calc(var(--cube-half-depth) * -1); left: 0; transform: rotateX(90deg); filter: brightness(1.15); }
+        .face-bottom { width: 100%; height: var(--cube-depth); bottom: calc(var(--cube-half-depth) * -1); left: 0; transform: rotateX(-90deg); filter: brightness(0.7); }
 
-.number-text-4 { left: 1453.42px; top: 145.54px; }
+        /* Info Text */
+        .color-block-info {
+            position: absolute;
+            top: 5px; right: 5px;
+            text-align: right;
+            font-size: 10px;
+            line-height: 1.4;
+            pointer-events: none;
+            color: white; 
+            mix-blend-mode: difference; 
+            font-family: 'Roboto Mono', monospace;
+            font-weight: normal;
+        }
 
-.number-text-5 { left: 258.42px; top: 961.54px; }
+        /* --- Image --- */
+        .image-container img {
+            width: 100%; height: auto; display: block;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: filter 0.3s ease;
+            transform: 
+                rotateY(calc( (var(--rel-x) * -75deg) + (var(--mouse-x) * 40deg) ))
+                rotateX(calc( (var(--rel-y) * 75deg) + (var(--mouse-y) * -40deg) ))
+                translateZ(-2px); 
+        }
 
-.number-text-6 { left: 1453.42px; top: 961.54px; }
+        .image-container:hover .face-front { opacity: 0; }
+        .image-container:hover img { filter: brightness(1.05); }
+        .image-container:hover::after { opacity: 1; }
 
-.number-text-7 { left: 50.42px; top: 49.54px; }
+        /* =========================================
+           7. Popup & Info
+           ========================================= */
+        .center-display {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4); z-index: 2000; backdrop-filter: blur(8px); 
+            align-items: center; justify-content: center; 
+        }
 
-.number-text-8 { left: 1665.42px; top: 49.54px; }
+        .spec-sheet-container { width: 90vw; height: 90vh; background: #e6e6e6; display: flex; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow: hidden; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; position: relative; }
+        .spec-image-col { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .spec-image-col img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .spec-info-col { flex: 1; padding: 50px; overflow-y: auto; display: flex; flex-direction: column; background: #e6e6e6; }
+        .spec-title { font-size: 4.5rem; font-weight: 700; margin-bottom: 20px; line-height: 0.9; letter-spacing: -2px; word-wrap: break-word; }
+        .spec-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px; border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 15px 0; margin-bottom: 40px; }
+        .spec-meta-item { display: flex; flex-direction: column; }
+        .spec-meta-item .label { font-size: 0.75rem; font-weight: 700; opacity: 0.8; margin-bottom: 8px; }
+        .spec-meta-item .value { font-size: 0.95rem; font-weight: 400; }
+        .spec-description-row { display: flex; gap: 30px; }
+        .spec-description-row .label-col { width: 120px; font-size: 0.75rem; font-weight: 700; opacity: 0.8; margin-top: 6px;}
+        .spec-description-row .text-col { font-size: 1.25rem; line-height: 1.4; flex-grow: 1; }
+        .close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: transparent; border: 2px solid #000; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; transition: all 0.2s; }
+        .close-btn:hover { background: #000; color: #fff; }
 
-.number-text-9 { left: 50.42px; top: 1055.54px; }
-
-.number-text-10 { left: 1665.42px; top: 1055.54px; }
-
-.number-text-11 { left: 1246.42px; top: 287.54px; }
-
-.number-text-12 { left: 466.42px; top: 819.54px; }
-
-.number-text-13 { left: 1246.42px; top: 819.54px; }
-
-.number-text-14 { left: 665.42px; top: 682.54px; }
-
-.number-text-15 { left: 1047.42px; top: 682.54px; }
-
-.number-text-16 { left: 1047.42px; top: 425.54px; } */
-
-
-
-/* Center display (pop-up when item is clicked) */
-.center-display {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000;
-    pointer-events: auto;
-}
-
-/* Center display content */
-.center-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 8px;
-    z-index: 1010;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: auto;
-}
-
-/* Image container for center display */
-.image-wrapper {
-    height: 65vmin;
-    aspect-ratio: 2 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-.image-wrapper img {
-    width: auto;
-    height: 100%;
-    object-fit: contain;
-}
-
-/* Text background styling */
-.text-background {
-    padding: 1.25%;
-    background-color: white;
-    text-align: center;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    bottom:10px
-}
-
-/* Text details */
-#center-name, #center-title, #center-year, #center-body {
-    font-family: Helvetica, Arial, sans-serif;
-    text-align: center;
-}
-
-#center-name {
-    font-size: 2.5vmin;
-    font-weight: bold;
-}
-
-#center-title {
-    font-size: 2.5vmin;
-    font-style: italic;
-    font-weight: bold;
-}
-
-#center-year {
-    font-size: 2.5vmin;
-    font-weight: bold;
-}
-
-#center-body {
-    font-size: 2.2vmin;
-    max-width: 80%;
-    margin: 0 auto;
-    line-height: 1.5;
-}
-
-/* Interactive image container */
-.interactive-container {
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    pointer-events: none;
- 
-}
-
-/* Individual image containers */
-.image-container {
-    position: absolute;
-    width: 7.5vmin;
-    height: 7.5vmin;
-    pointer-events: all;
-    z-index: 10;
-}
-
-
-.image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: filter 0.3s ease;
-    z-index: 1000;
-}
-.image-container :hover{
-    width: 20vmin;
-    height: 20vmin;
-    border: 10px rgb(187, 255, 0);
-    transition: 0.25s ease-in; 
-    z-index: 1000;
-}
-
-/* Ensure full height */
-.full-viewport-height {
-    height: 100vh;
-}
-
-@supports (height: 100dvh) {
-    .full-viewport-height {
-      height: 100dvh;
-    }
-}
+        @media (max-width: 768px) {
+            .spec-sheet-container { flex-direction: column; width: 100vw; height: 100vh; }
+            .spec-image-col { flex: none; height: 40vh; }
+            .spec-info-col { flex: 1; padding: 25px; }
+            .spec-title { font-size: 2.5rem; }
+            .spec-description-row { flex-direction: column; gap: 10px; }
+        }

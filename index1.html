@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RunInspoArchive</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    <script>
+        // Initializes the Google Analytics data layer
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        // Sends the configuration command to Google Analytics
+        gtag('js', new Date());
+        gtag('config', 'G-B1QSW29N2C');
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="buttons" id="category-buttons"></div>
+
+        <div class="tunnel-grid-container layer-3d"></div>
+        <div class="interactive-container layer-3d"></div>
+
+        <div class="rectangle-1"></div>
+        <div class="rectangle-2"></div>
+        <div class="rectangle-3"></div>
+        <div class="rectangle-4"></div>
+        <div class="horizontal-line"></div>
+        <div class="vertical-line"></div>
+
+        <svg class="perspective-lines" xmlns="http://www.w3.org/2000/svg">
+            <!-- Diagonal lines with 1px stroke width -->
+            <line x1="0" y1="0" x2="35.1%" y2="35.1%" stroke="black" stroke-width="1"/>
+            <line x1="100%" y1="0" x2="64.9%" y2="35.1%" stroke="black" stroke-width="1"/>
+            <line x1="0" y1="100%" x2="35.1%" y2="64.9%" stroke="black" stroke-width="1"/>
+            <line x1="100%" y1="100%" x2="64.9%" y2="64.9%" stroke="black" stroke-width="1"/>
+        </svg>
+
+        <div class="page-title">
+            <div>WHAT INSPIRED RUNPING</div>
+            <div>AT THE FIRST GLANCE </div>
+            <div>IN THE RISD FlEET LIBRARY</div>
+
+        </div>
+
+        <div class="personal-text text">Personal</div>
+        <div class="functional-text text">Functional</div>
+        <div class="visual-inspo-text text">Visual Inspo</div>
+        <div class="writing-inspo-text text">Writing Inspo</div>
+    </div>
+
+    <div class="center-display" id="center-display"></div>
+
+    <!-- LINKING THE JAVASCRIPT FILE -->
+    <!-- This script will handle fetching and displaying Google Sheets data -->
+    <script src="script.js"></script>
+</div>
+
+
+</body>
+</html>

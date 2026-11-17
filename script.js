@@ -1,126 +1,279 @@
-// Wait for the document to fully load before executing the script
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Google Sheets API details
-    const SHEET_ID = '1--uA2REsaw76iW2xG79rl5cJJtAkEf5hNBEVCAlBYQw'; // Spreadsheet ID
-    const API_KEY = 'AIzaSyCqZzQ1lChN67KySstdi8-i7eue-oUIyKs'; // API key for authentication
-    const RANGE = 'Sheet1!A1:M50'; // The range of data to fetch (columns A to J, rows 1 to 500)
 
-    // Construct the API URL to fetch data from the Google Sheets
+    const interactiveContainer = document.querySelector('.interactive-container');
+    const tunnelGridContainer = document.querySelector('.tunnel-grid-container'); 
+    const centerDisplay = document.querySelector('.center-display');
+    const buttonsContainer = document.getElementById('category-buttons');
+    let activeTimeouts = [];
+    let activeCategory = null; 
+
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        interactiveContainer.style.transform = `translate3d(0, 0, ${scrollY}px)`;
+        tunnelGridContainer.style.transform = `translate3d(0, 0, ${scrollY}px)`;
+    }, { passive: true });
+
+    document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) * 2 - 1;
+        const y = (e.clientY / window.innerHeight) * 2 - 1;
+        document.body.style.setProperty('--mouse-x', x);
+        document.body.style.setProperty('--mouse-y', y);
+    });
+
+    const SHEET_ID = '1--uA2REsaw76iW2xG79rl5cJJtAkEf5hNBEVCAlBYQw';
+    const API_KEY = 'AIzaSyCqZzQ1lChN67KySstdi8-i7eue-oUIyKs'; 
+    const RANGE = 'Sheet1!A1:M50';
     const SHEET_API_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
-    // Fetch data from the Google Sheets API
     fetch(SHEET_API_URL)
         .then(response => {
-            // Check if the response is okay (status 200)
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json(); // Parse response as JSON
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
         })
         .then(data => {
-            const rows = data.values; // Extract the rows from the data
-            const headers = rows[0]; // First row contains headers (column names)
-            
-            // Convert the remaining rows into an array of objects
+            const rows = data.values;
+            const headers = rows[0];
             const jsonData = rows.slice(1).map(row => {
                 const obj = {};
                 row.forEach((value, index) => {
-                    obj[headers[index]] = value; // Map column headers to corresponding row values
+                    if (headers[index]) {
+                        obj[headers[index].toLowerCase()] = value;
+                    }
                 });
                 return obj;
             });
-
-            console.log('Parsed JSON Data:', jsonData); // Log the structured data for debugging
-            renderData(jsonData); // Call function to display the data on the webpage
+            renderData(jsonData);
         })
-        .catch(error => console.error('Error fetching data:', error)); // Handle any fetch errors
+        .catch(error => {
+            console.warn('Using Fallback Data:', error);
+            renderFallbackData();
+        });
 
- 
-    /**
-     * Function to render the fetched data as selectable content
-     */
     function renderData(data) {
-        const interactiveContainer = document.querySelector('.interactive-container'); // Container where images will be placed
-        const centerDisplay = document.querySelector('.center-display'); // Modal-like display area for selected item
-        const centerContent = document.querySelector('.center-content'); // Clickable area to close the modal
-// change this
-        data.forEach(item => {
-            const { title, category, year, name, size, description, visuals, why, color, image,top,left} = item; // Destructure properties from item
-
-            // Check if image is missing or empty, and skip this item if so
-            if (!image || !image.trim()) {
-                console.warn('Skipping item due to missing or invalid ImageURL:', item);
-                return;
+        const validData = data.filter(item => item.image && item.image.trim());
+        
+        const categories = new Set();
+        validData.forEach(item => {
+            if(item.category && item.category.trim() !== '') {
+                categories.add(item.category.trim());
             }
+        });
+        generateCategoryButtons(Array.from(categories));
 
-            // Create a div container for the item
-            const container = document.createElement('div');
-            container.className = 'image-container';
-            container.style.top = `${parseFloat(top) || 0}%`; // Set vertical position
-            container.style.left = `${parseFloat(left) || 0}%`; // Set horizontal position
+        const Z_DISTANCE = 150;  
+        const START_Z = -1000; 
+        
+        const SCATTER_X = 25; 
+        const SCATTER_Y = 15; 
 
-            // Store metadata as data attributes
-            container.setAttribute('data-name', name || 'Unknown');
-            container.setAttribute('data-category', category || 'Unknown');
-            container.setAttribute('data-size', size || 'Unknown');
-            container.setAttribute('data-title', title || 'Untitled');
-            container.setAttribute('data-year', year || 'Unknown');
-            container.setAttribute('data-visuals', visuals || 'Unknown');
-            container.setAttribute('data-why', why || 'Unknown');
-            container.setAttribute('data-color', color || 'Unknown');
-            container.setAttribute('data-image', image || 'unavailable');
-            container.setAttribute('data-description', description || 'No description available.');
+        const contentDepth = (validData.length * Z_DISTANCE);
+        const totalPageHeight = contentDepth + window.innerHeight * 2;
+        document.body.style.height = `${totalPageHeight}px`;
 
-            // Create an image element
+        const gridSpacing = 1000; 
+        const gridCount = Math.ceil(totalPageHeight / gridSpacing) + 2; 
+        
+        for(let i = 0; i < gridCount; i++) {
+            const frame = document.createElement('div');
+            frame.className = 'tunnel-frame';
+            const zPos = -(i * gridSpacing) + 500; 
+            frame.style.transform = `translate(-50%, -50%) translate3d(0, 0, ${zPos}px)`;
+            tunnelGridContainer.appendChild(frame);
+        }
+
+        validData.forEach((item, index) => {
+            const { title, category, year, name, description, visuals, why, color, image, top, left} = item;
+
+            const randomZ = (Math.random() - 0.5) * 50; 
+            const zPos = START_Z - (index * Z_DISTANCE) + randomZ;
+            
+            const rawTop = parseFloat(top) || 50;
+            const rawLeft = parseFloat(left) || 50;
+
+            const randomX = (Math.random() - 0.5) * 5; 
+            const randomY = (Math.random() - 0.5) * 5;
+            
+            const xOffset = ((rawLeft - 50) + randomX) * SCATTER_X / 10; 
+            const yOffset = ((rawTop - 50) + randomY) * SCATTER_Y / 10;
+
+            const relX = ((rawLeft - 50) + randomX) / 50;
+            const relY = ((rawTop - 50) + randomY) / 50;
+
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'image-container';
+            imgContainer.setAttribute('data-title', title || 'Untitled'); 
+            
+            imgContainer.style.setProperty('--rel-x', relX);
+            imgContainer.style.setProperty('--rel-y', relY);
+
+            imgContainer.style.transform = `
+                translate3d(
+                    calc(-50% + ${xOffset}vw), 
+                    calc(-50% + ${yOffset}vh), 
+                    calc(${zPos}px + (var(--mouse-y) * 200px) + var(--hover-z, 0px))
+                )
+            `;
+            
+            imgContainer.setAttribute('data-name', name || 'Unknown');
+            imgContainer.setAttribute('data-category', category ? category.trim() : 'Uncategorized');
+            imgContainer.setAttribute('data-year', year || 'Unknown');
+            imgContainer.setAttribute('data-description', description || 'No description available.');
+            imgContainer.setAttribute('data-visuals', visuals || 'Unknown');
+            
+            const colorCube = document.createElement('div');
+            colorCube.className = 'color-cube';
+            const blockColor = (color && color !== '') ? color : '#e0e0e0';
+            colorCube.style.setProperty('--cube-color', blockColor);
+            
+            const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+            faces.forEach(faceName => {
+                const face = document.createElement('div');
+                face.className = `cube-face face-${faceName}`;
+                if(faceName === 'front') {
+                    const infoText = document.createElement('div');
+                    infoText.className = 'color-block-info';
+                    let innerHTML = '';
+                    if (why) innerHTML += `<div>${why}</div>`;
+                    if (color) innerHTML += `<div>${color}</div>`;
+                    infoText.innerHTML = innerHTML;
+                    face.appendChild(infoText);
+                }
+                colorCube.appendChild(face);
+            });
+
             const img = document.createElement('img');
-            img.src = image.trim(); // Assign image source
-            img.alt = title || 'image'; // Provide an alt text for accessibility
+            img.src = image.trim();
+            img.alt = title || 'image';
+            img.loading = "lazy";
+            img.onerror = () => { imgContainer.style.display = 'none'; };
 
-          
-            // Append image to container and container to the interactive area
-            container.appendChild(img);
-            interactiveContainer.appendChild(container);
+            const tempImg = new Image();
+            tempImg.crossOrigin = "Anonymous";
+            tempImg.src = image.trim();
+            tempImg.onload = function() {
+                try {
+                    const dominantColor = getDominantColor(this);
+                    if (dominantColor) {
+                        colorCube.style.setProperty('--cube-color', dominantColor);
+                    }
+                } catch (e) {}
+            };
+
+            imgContainer.appendChild(colorCube);
+            imgContainer.appendChild(img);
+            interactiveContainer.appendChild(imgContainer);
         });
 
-        // Add event listener to handle clicks on images
         interactiveContainer.addEventListener('click', (event) => {
-            const container = event.target.closest('.image-container'); // Find the closest clicked container
-            if (container) {
-                displayCenterInfo(container); // Show details of the clicked item
+            const targetContainer = event.target.closest('.image-container');
+            if (targetContainer) {
+                displayCenterInfo(targetContainer);
             }
         });
 
-        // Click event to hide the center display when clicked
-        centerContent.addEventListener('click', () => {
-            centerDisplay.style.display = 'none';
+        centerDisplay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
         });
     }
 
-    /**
-     * Function to display detailed information in the center display area
-     */
+    function generateCategoryButtons(categories) {
+        buttonsContainer.innerHTML = '';
+        categories.sort();
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'category-btn';
+            btn.textContent = cat;
+            btn.addEventListener('click', () => { toggleCategory(cat, btn); });
+            buttonsContainer.appendChild(btn);
+        });
+    }
+
+    function toggleCategory(category, btnElement) {
+        const allItems = document.querySelectorAll('.image-container');
+        const allBtns = document.querySelectorAll('.category-btn');
+
+        if (activeCategory === category) {
+            activeCategory = null;
+            allBtns.forEach(b => b.classList.remove('active'));
+            allItems.forEach(item => {
+                item.classList.remove('highlighted');
+                item.classList.remove('category-hidden');
+            });
+        } else {
+            activeCategory = category;
+            allBtns.forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            allItems.forEach(item => {
+                const itemCat = item.getAttribute('data-category');
+                if (itemCat === category) {
+                    item.classList.add('highlighted');
+                    item.classList.remove('category-hidden');
+                } else {
+                    item.classList.remove('highlighted');
+                    item.classList.add('category-hidden'); 
+                }
+            });
+        }
+    }
+
+    function renderFallbackData() {
+        const baseItems = [
+            { title: "Art 1", image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500", top: "20", left: "20", color: "#d4a5a5", category: "Art", why: "Shape", colorCode: "#d4a5a5" },
+            { title: "Design 2", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500", top: "80", left: "80", color: "#a5d4d4", category: "Graphic Design", why: "Texture", colorCode: "#a5d4d4" },
+            { title: "Type 3", image: "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=500", top: "30", left: "70", color: "#d4d4a5", category: "Typography", why: "Mood", colorCode: "#d4d4a5" },
+            { title: "Art 4", image: "https://images.unsplash.com/photo-1501472312651-726afe119ff1?w=500", top: "70", left: "30", color: "#a5b4d4", category: "Art", why: "Light", colorCode: "#a5b4d4" },
+            { title: "Photo 5", image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=500", top: "50", left: "50", color: "#d4a5c9", category: "Photography", why: "Form", colorCode: "#d4a5c9" },
+        ];
+        let fallbackItems = [];
+        for(let i=0; i<4; i++) { 
+             fallbackItems = fallbackItems.concat(baseItems.map(item => ({
+                 ...item, 
+                 top: Math.random() * 100, 
+                 left: Math.random() * 100 
+             })));
+        }
+        renderData(fallbackItems);
+    }
+
+    function getDominantColor(imgEl) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 50; canvas.height = 50;
+        ctx.drawImage(imgEl, 0, 0, 50, 50);
+        try {
+            const imageData = ctx.getImageData(0, 0, 50, 50).data;
+            return `rgb(${imageData[0]}, ${imageData[1]}, ${imageData[2]})`;
+        } catch (e) { return null; }
+    }
+
     function displayCenterInfo(container) {
-        // Select elements for displaying detailed information
-        const centerImage = document.getElementById('center-image');
-        const centerName = document.getElementById('center-name');
-        const centerTitle = document.getElementById('center-title');
-        const centerYear = document.getElementById('center-year');
-        const centerBody = document.getElementById('center-body');
-        const centerDisplay = document.querySelector('.center-display');
-
-        // Populate the center display with the item's data
-        centerImage.src = container.querySelector('img').src;
-        centerName.textContent = container.getAttribute('data-name');
-        centerTitle.textContent = container.getAttribute('data-title');
-        centerYear.textContent = container.getAttribute('data-year');
-        centerBody.textContent = container.getAttribute('data-description');
-
-        // Show the center display
+        const title = container.getAttribute('data-title') || "Untitled";
+        const imageSrc = container.querySelector('img').src || "";
+        
+        const html = `
+            <div class="spec-sheet-container">
+                <button class="close-btn" onclick="document.getElementById('center-display').style.display='none'">×</button>
+                <div class="spec-image-col">
+                    <img src="${imageSrc}" alt="${title}">
+                </div>
+                <div class="spec-info-col">
+                    <h1 class="spec-title">${title}</h1>
+                    <div class="spec-meta-grid">
+                        <div class="spec-meta-item"><span class="label">AUTHOR</span><span class="value">${container.getAttribute('data-name')}</span></div>
+                        <div class="spec-meta-item"><span class="label">CATEGORY</span><span class="value">${container.getAttribute('data-category')}</span></div>
+                        <div class="spec-meta-item"><span class="label">YEAR</span><span class="value">${container.getAttribute('data-year')}</span></div>
+                        <div class="spec-meta-item"><span class="label">VISUALS</span><span class="value">${container.getAttribute('data-visuals')}</span></div>
+                    </div>
+                    <div class="spec-description-row">
+                        <div class="label-col">DESCRIPTION</div>
+                        <div class="text-col">${container.getAttribute('data-description')}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        centerDisplay.innerHTML = html;
         centerDisplay.style.display = 'flex';
     }
-  
 });
-
-
-
